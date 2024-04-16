@@ -1,1 +1,1 @@
-# substation-connector-monitor
+# Substation Protection Plate Monitor
