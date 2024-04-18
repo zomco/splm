@@ -1,78 +1,14 @@
 .board {
-    position: absolute;
-}
-
-.background {
-    width: 50px;
-    height: 200px;
-    background-color: #ccc;
-    border: 2px solid #000;
-    border-radius: 50px;
-}
-
-.foreground {
-    width: 50px;
-    height: 200px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    position: absolute;
-    left: 0;
-    top: 0;
 }
 
-.foreground .knob {
-    width: 50px;
-    height: 50px;
-    background-color: #000;
-    border-radius: 50%;
-}
-
-.gear {
-    width: 50px;
-    height: 200px;
-    background-color: #eee;
-    border: 2px solid #000;
-    border-radius: 25px 25px 50px 50px;
+.row {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    position: absolute;
-    left: 0;
-    top: 0;
-    transform: rotate(-45deg);
-    transform-origin: 25px 175px;
-    transition: transform .2s ease-in-out;
+    width: 60%;
 }
-
-.gear .head {
-    width: 42px;
-    height: 40px;
-    background-color: #fff;
-    border: 2px solid #000;
-    position: relative;
-    top: 5px;
-    left: 5px;
-    border-radius: 5px 0 0 5px;
-    border-right-color: #fff;
-}
-
-.gear .spin {
-    width: 40px;
-    height: 40px;
-    background-color: #fff;
-    position: relative;
-    border-radius: 50%;
-    top: -5px;
-}
-
-.gear .touch {
-    width: 60px;
-    height: 60px;
-    background-color: #ccc;
-    border: 2px solid #000;
-    border-radius: 5px;
-}
-

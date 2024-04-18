@@ -1,18 +1,18 @@
 import "./dashboard.css";
+import {
+    useLoaderData,
+    Link,
+} from "react-router-dom";
+import Plate from "../components/plate.tsx";
 
 export default function Dashboard() {
+    const plates: PlateInfo[] = useLoaderData() as PlateInfo[];
+
     return (
-        <div className="board mt-10">
-            <div className="background"></div>
-            <div className="gear">
-                <div className="head"></div>
-                <div className="touch"></div>
-                <div className="spin"></div>
-            </div>
-            <div className="foreground">
-                <div className="knob"></div>
-                <div className="knob"></div>
-            </div>
+        <div className="mt-10 w-full min-h-dvh grid grid-cols-9 grid-rows-12 justify-items-center items-center gap-2">
+            {
+                plates.map((plate, i) => <Link key={i} to={`/info/${plate.id}`}><Plate item={plate} /></Link>)
+            }
         </div>
     );
 }

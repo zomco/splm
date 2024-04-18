@@ -3,8 +3,8 @@ import { Outlet, useNavigation } from "react-router-dom";
 export default function Root() {
     const navigation = useNavigation();
     return (
-        <div className="container mx-auto px-4">
-            <main>
+        <div className="md:container md:mx-auto md:px-4 md:min-h-dvh">
+            <main className="md:min-h-dvh md:w-full flex justify-center items-center">
                 {
                     navigation.state === "loading" ?
                         <div
