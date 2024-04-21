@@ -39,7 +39,6 @@
     position: relative;
     left: 0;
     top: 0;
-    /*transform: rotate(-45deg);*/
     transform-origin: 5px 35px;
     transition: transform .2s ease-in-out;
 }

@@ -1,6 +1,6 @@
 import "./plate.css";
 
-export default function Plate({ item } : { item: PlateInfo }) {
+export default function Plate({ item } : { item: PlateInfo, size: number }) {
     return (
         <div className="relative">
             {/*<div className="background"></div>*/}

@@ -5,17 +5,27 @@ import {
     Switch,
     Space,
     Table,
-    Divider
+    Divider,
+    DatePicker,
+    ConfigProvider,
+    Typography,
 } from 'antd';
-import React, {useState} from "react";
+const { RangePicker } = DatePicker;
 import {useLoaderData} from "react-router-dom";
+import locale from 'antd/locale/zh_CN';
+import dayjs from 'dayjs';
 
+const { Title } = Typography;
+
+import 'dayjs/locale/zh-cn';
+
+dayjs.locale('zh-cn');
 
 export default function Information() {
     const plate: PlateInfo = useLoaderData() as PlateInfo;
     return (
         <div className="mt-10 w-full min-h-dvh">
-            <div className="text-xl font-bold mb-6">压板信息</div>
+            <Title level={3}>压板信息</Title>
             <Form
                 name="validate_other"
                 labelCol={{span: 6}}
@@ -42,25 +52,48 @@ export default function Information() {
                 </Form.Item>
             </Form>
             <Divider />
-            <div className="text-xl font-bold mb-6">巡检历史</div>
+            <Title level={3}>巡检历史</Title>
+            <Space style={{ marginBottom: 16 }}>
+                <ConfigProvider locale={locale}>
+                    <RangePicker size="large" showTime />
+                </ConfigProvider>
+                <Button onClick={() => console.log("search by datetime")}>查询</Button>
+            </Space>
             <Table
                 columns={
                     [
                         {
+                            title: '巡检时间',
+                            dataIndex: 'timestamp',
+                            align: 'center',
+                            render: (text) => new Date(text).toLocaleString('zh-hans-CN'),
+                            defaultSortOrder: 'descend',
+                            sorter: (a, b) => a.timestamp - b.timestamp,
+                            width: 200,
+                        },
+                        {
                             title: '实际状态',
                             dataIndex: 'actualValue',
                             align: 'center',
-                            render: (text) => text == true ? "投入" : "退出"
-                        },
-                        {
-                            title: '巡检时间',
-                            dataIndex: 'timestamp',
-                            align: 'center'
+                            render: (text) => text == true ? "投入" : "退出",
+                            showSorterTooltip: { target: 'full-header' },
+                            filters: [
+                                {
+                                    text: '投入',
+                                    value: true,
+                                },
+                                {
+                                    text: '退出',
+                                    value: false,
+                                }
+                            ],
+                            onFilter: (value, record) => record.actualValue === value,
                         },
                     ]
                 }
                 dataSource={plate.statuses}
                 rowKey="id"
+                pagination={{pageSize: 100}}
             />
         </div>
     );
