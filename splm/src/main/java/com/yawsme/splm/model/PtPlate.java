@@ -22,7 +22,7 @@ import java.util.Objects;
 @Schema(name = "压板")
 @Entity
 @Table(name = "pt_plate")
-@SQLDelete(sql = "UPDATE pt_plate SET is_deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE pt_plate SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 @Getter
 @Setter
@@ -48,12 +48,12 @@ public class PtPlate extends BaseEntity {
   @NotNull
   @Column(nullable = false)
   @Schema(name = "压板所在行")
-  private Integer row;
+  private Integer cx;
 
   @NotNull
   @Column(nullable = false)
   @Schema(name = "压板所在列")
-  private Integer column;
+  private Integer cy;
 
 
   @Override

@@ -10,7 +10,7 @@ export default function Root() {
     return (
         <Layout>
             <Header
-                title="Hello"
+                title="压板状态监控系统"
                 style={{
                     position: 'sticky',
                     top: 0,

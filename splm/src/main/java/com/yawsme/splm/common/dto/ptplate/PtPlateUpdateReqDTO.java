@@ -11,7 +11,7 @@ public class PtPlateUpdateReqDTO implements Serializable {
 
   String name;
   Boolean enabled;
-  Integer row;
-  Integer column;
+  Integer cy;
+  Integer cx;
 }
 

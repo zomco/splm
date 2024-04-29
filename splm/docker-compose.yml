@@ -1,0 +1,52 @@
+services:
+
+#  app:
+#    container_name: app
+#    build:
+#      context: .
+#      target: production
+#    ports:
+#      - "48080:8080"
+#    restart: always
+#    depends_on:
+#      - mysql
+#      - redis
+#    volumes:
+#      - "./docker/app/media:/app/media"
+#      - "./docker/app/log:/app/log"
+#      - "./docker/app/temp:/app/temp"
+#    links:
+#      - mysql
+#      - redis
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/splm?useUnicode=true&characterEncoding=utf8&useSSL=false
+#      - SPRING_DATA_REDIS_HOST=redis
+#    profiles: [dev, prod]
+
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - "46379:6379"
+    restart: always
+    volumes:
+      - "./docker/redis/data:/data"
+    profiles: [dev]
+
+  mysql:
+    container_name: mysql
+    image: mysql
+    ports:
+      - "43306:3306"
+    restart: always
+    volumes:
+      - "./docker/mysql/data:/var/lib/mysql"
+      - "./docker/mysql/log:/var/log/mysql"
+      - "./docker/mysql/config:/etc/mysql/conf.d"
+    environment:
+      - MYSQL_DATABASE=splm
+      - MYSQL_USER=splm
+      - MYSQL_PASSWORD=test1234.
+      - MYSQL_ROOT_PASSWORD=test1234.
+    command: mysqld --default-authentication-plugin=mysql_native_password --skip-ssl --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    profiles: [dev]

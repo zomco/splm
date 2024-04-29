@@ -45,7 +45,7 @@ public class PtPlateStatusController {
     this.ptPlateStatusService = ptPlateStatusService;
   }
 
-  public PtPlateStatusRspDTO ptPlateStatusMapper(PtPlateStatus ptPlateStatus) {
+  static public PtPlateStatusRspDTO ptPlateStatusMapper(PtPlateStatus ptPlateStatus) {
     PtPlateStatusRspDTO result = new PtPlateStatusRspDTO();
     result.setId(ptPlateStatus.getId());
     result.setCreateTime(ptPlateStatus.getCreateTime());
@@ -57,7 +57,7 @@ public class PtPlateStatusController {
   @Operation(summary = "压板状态列表")
   @GetMapping("")
   public ResultMessage<Page<PtPlateStatusRspDTO>> retrievePtPlateStatuses(
-      @PathVariable Long plateId,
+      Long plateId,
       @RequestParam() @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
       @RequestParam() @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME) LocalDateTime stop,
       Pageable pageable
@@ -67,7 +67,7 @@ public class PtPlateStatusController {
 
     Page<PtPlateStatus> pageRecords = ptPlateStatusService.findPtPlateStatuses(ptPlate.getId(), start, stop, pageable);
     List<PtPlateStatusRspDTO> listResults = pageRecords
-        .stream().map(this::ptPlateStatusMapper).toList();
+        .stream().map(PtPlateStatusController::ptPlateStatusMapper).toList();
 
     Page<PtPlateStatusRspDTO> pageResults = new PageImpl<>(listResults, pageRecords.getPageable(), pageRecords.getTotalElements());
     return ResultUtil.data(pageResults);

@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 @Slf4j
@@ -26,6 +27,10 @@ public class PtPlateStatusService {
   ) {
     this.ptPlateStatusRepository = ptPlateStatusRepository;
     this.redisTemplate = redisTemplate;
+  }
+
+  public Optional<PtPlateStatus> findPtPlateLatestStatus(Long plateId) {
+    return ptPlateStatusRepository.findOne(PtPlateStatusSpec.orderByTime(PtPlateStatusSpec.hasPlate(plateId)));
   }
 
   public Page<PtPlateStatus> findPtPlateStatuses(Long plateId, LocalDateTime start, LocalDateTime stop, Pageable pageable) {

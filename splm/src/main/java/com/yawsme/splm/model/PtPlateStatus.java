@@ -23,7 +23,7 @@ import java.util.Objects;
 @Schema(name = "压板状态")
 @Entity
 @Table(name = "pt_plate_status")
-@SQLDelete(sql = "UPDATE pt_plate_status SET is_deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE pt_plate_status SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 @Getter
 @Setter

@@ -10,6 +10,7 @@ import com.yawsme.splm.common.dto.ptplate.PtPlateRspDTO;
 import com.yawsme.splm.model.PtPlate;
 import com.yawsme.splm.model.PtPlateStatus;
 import com.yawsme.splm.service.PtPlateService;
+import com.yawsme.splm.service.PtPlateStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +24,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -33,50 +36,74 @@ public class PtPlateController {
 
   RedisTemplate<String, String> redisTemplate;
   PtPlateService ptPlateService;
+  PtPlateStatusService ptPlateStatusService;
 
   @Autowired
   public PtPlateController(
       RedisTemplate<String, String> redisTemplate,
-      PtPlateService ptPlateService
+      PtPlateService ptPlateService,
+      PtPlateStatusService ptPlateStatusService
   ) {
     this.redisTemplate = redisTemplate;
     this.ptPlateService = ptPlateService;
+    this.ptPlateStatusService = ptPlateStatusService;
   }
 
-  public PtPlateRspDTO ptPlateMapper(PtPlate ptPlate) {
+  static public PtPlateRspDTO ptPlateMapper(PtPlate ptPlate) {
     PtPlateRspDTO result = new PtPlateRspDTO();
     result.setId(ptPlate.getId());
+    result.setBoardId(ptPlate.getBoardId());
     result.setName(ptPlate.getName());
     result.setEnabled(ptPlate.getEnabled());
-    result.setRow(ptPlate.getRow());
-    result.setColumn(ptPlate.getColumn());
+    result.setCx(ptPlate.getCx());
+    result.setCy(ptPlate.getCy());
 
     return result;
   }
 
   @Operation(summary = "压板列表")
   @GetMapping("")
-  public ResultMessage<Page<PtPlateRspDTO>> retrievePtPlates(
-      Long boardId,
-      Pageable pageable
+  public ResultMessage<List<PtPlateRspDTO>> retrievePtPlates(
+      Long boardId
   ) {
-    Page<PtPlate> pageRecords = ptPlateService.findPtPlates(boardId, pageable);
+    List<PtPlate> pageRecords = ptPlateService.findPtPlates(boardId);
     List<PtPlateRspDTO> listResults = pageRecords
-        .stream().map(this::ptPlateMapper).toList();
+        .stream().map((result) -> {
+          PtPlateRspDTO ptPlateRspDTO = PtPlateController.ptPlateMapper(result);
+          // 最新状态
+          Optional<PtPlateStatus> status = ptPlateStatusService.findPtPlateLatestStatus(result.getId());
+          status.ifPresent(ptPlateStatus -> ptPlateRspDTO.setStatus(ptPlateStatus.getActualValue()));
 
-    Page<PtPlateRspDTO> pageResults = new PageImpl<>(listResults, pageRecords.getPageable(), pageRecords.getTotalElements());
-    return ResultUtil.data(pageResults);
+          return ptPlateRspDTO;
+        }).toList();
+
+    return ResultUtil.data(listResults);
   }
 
   @Operation(summary = "压板详情")
   @GetMapping("/{id}")
   public ResultMessage<PtPlateRspDTO> retrievePtPlate(
-      @PathVariable Long id
+      @PathVariable Long id,
+      LocalDateTime start,
+      LocalDateTime stop,
+      Pageable pageable
   ) {
     PtPlate ptPlate = ptPlateService.findPtPlate(id)
         .orElseThrow(() -> new ControllerException(ResultCode.PLATE_NOT_EXIST));
+    PtPlateRspDTO ptPlateRspDTO = PtPlateController.ptPlateMapper(ptPlate);
 
-    return ResultUtil.data(ptPlateMapper(ptPlate));
+    // 最新状态
+    Optional<PtPlateStatus> status = ptPlateStatusService.findPtPlateLatestStatus(ptPlate.getId());
+    status.ifPresent(ptPlateStatus -> ptPlateRspDTO.setStatus(ptPlateStatus.getActualValue()));
+
+    // 状态列表
+    Page<PtPlateStatus> pageRecords = ptPlateStatusService.findPtPlateStatuses(id, start, stop, pageable);
+    List<PtPlateStatusRspDTO> listResults = pageRecords
+        .stream().map(PtPlateStatusController::ptPlateStatusMapper).toList();
+
+    Page<PtPlateStatusRspDTO> pageResults = new PageImpl<>(listResults, pageRecords.getPageable(), pageRecords.getTotalElements());
+    ptPlateRspDTO.setStatuses(pageResults);
+    return ResultUtil.data(ptPlateRspDTO);
   }
 
   @Operation(summary = "更新压板")
@@ -95,7 +122,7 @@ public class PtPlateController {
     }
     ptPlateService.savePtPlate(ptPlate);
 
-    return ResultUtil.data(ptPlateMapper(ptPlate));
+    return ResultUtil.data(PtPlateController.ptPlateMapper(ptPlate));
   }
 
 }

@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-@Schema(name = "压板信息响应")
+@Schema(name = "压板状态响应")
 public class PtPlateStatusRspDTO implements Serializable {
 
   Long id;

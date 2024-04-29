@@ -1,19 +1,24 @@
 package com.yawsme.splm.common.dto.ptplate;
 
+import com.yawsme.splm.common.enums.PtPlateStatusValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
-@Schema(name = "压板信息响应")
+@Schema(name = "压板响应")
 public class PtPlateRspDTO implements Serializable {
 
   Long id;
   Long boardId;
   String name;
   Boolean enabled;
-  Integer row;
-  Integer column;
+  Integer cx;
+  Integer cy;
+  PtPlateStatusValue status;
+  Page<PtPlateStatusRspDTO> statuses;
 }
 

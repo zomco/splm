@@ -17,12 +17,12 @@ import org.hibernate.annotations.Where;
 import java.util.Objects;
 
 /**
- * 事件.
+ * 铁板.
  */
 @Schema(name = "铁板")
 @Entity
 @Table(name = "pt_board")
-@SQLDelete(sql = "UPDATE pt_board SET is_deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE pt_board SET deleted = true WHERE id=?")
 @Where(clause = "deleted=false")
 @Getter
 @Setter

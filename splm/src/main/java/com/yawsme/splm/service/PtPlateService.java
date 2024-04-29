@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -29,8 +30,8 @@ public class PtPlateService {
     this.redisTemplate = redisTemplate;
   }
 
-  public Page<PtPlate> findPtPlates(Long boardId, Pageable pageable) {
-    return ptPlateRepository.findAll(PtPlateSpec.hasBoard(boardId), pageable);
+  public List<PtPlate> findPtPlates(Long boardId) {
+    return ptPlateRepository.findAll(PtPlateSpec.hasBoard(boardId));
   }
 
   public Optional<PtPlate> findPtPlate(Long id) {

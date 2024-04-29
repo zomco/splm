@@ -22,7 +22,10 @@ import 'dayjs/locale/zh-cn';
 dayjs.locale('zh-cn');
 
 export default function Information() {
-    const plate: PlateInfo = useLoaderData() as PlateInfo;
+    const response = useLoaderData() as CommonResponse<PlateInfo>;
+    const plate = response.result;
+
+    console.log(plate)
     return (
         <div className="mt-10 w-full min-h-dvh">
             <Title level={3}>压板信息</Title>
@@ -35,7 +38,7 @@ export default function Information() {
                 }}
                 initialValues={{
                     'name': plate.name,
-                    'enable': plate.enable,
+                    'enable': plate.enabled,
                 }}
                 style={{maxWidth: 600}}
             >
@@ -63,12 +66,12 @@ export default function Information() {
                 columns={
                     [
                         {
-                            title: '巡检时间',
-                            dataIndex: 'timestamp',
+                            title: '更新时间',
+                            dataIndex: 'createTime',
                             align: 'center',
                             render: (text) => new Date(text).toLocaleString('zh-hans-CN'),
                             defaultSortOrder: 'descend',
-                            sorter: (a, b) => a.timestamp - b.timestamp,
+                            sorter: (a, b) => a.createTime - b.createTime,
                             width: 200,
                         },
                         {
@@ -91,7 +94,7 @@ export default function Information() {
                         },
                     ]
                 }
-                dataSource={plate.statuses}
+                dataSource={plate.statuses.content}
                 rowKey="id"
                 pagination={{pageSize: 100}}
             />
