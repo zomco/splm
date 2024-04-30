@@ -33,19 +33,27 @@ export default function Information() {
                 name="validate_other"
                 labelCol={{span: 6}}
                 wrapperCol={{span: 14}}
-                onFinish={(values) => {
+                onFinish={async (values) => {
                     console.log('Received values of form: ', values);
+                    return await fetch(`/api/plate/${plate.id}`, {
+                        method: "POST",
+                        headers: {
+                            "Accept": "application/json",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(values)
+                    });
                 }}
                 initialValues={{
                     'name': plate.name,
-                    'enable': plate.enabled,
+                    'enabled': plate.enabled,
                 }}
                 style={{maxWidth: 600}}
             >
                 <Form.Item name="name" label="压板名称">
                     <Input/>
                 </Form.Item>
-                <Form.Item name="enable" label="启用状态" valuePropName="checked">
+                <Form.Item name="enabled" label="启用状态" valuePropName="checked">
                     <Switch/>
                 </Form.Item>
                 <Form.Item wrapperCol={{span: 12, offset: 6}}>

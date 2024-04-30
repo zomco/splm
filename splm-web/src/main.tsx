@@ -28,7 +28,7 @@ const router = createBrowserRouter([
                 element: <Information />,
                 loader: async ({ params}) => {
                     return await fetch(`/api/plate/${params.id}`);
-                }
+                },
             }
         ]
     },

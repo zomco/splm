@@ -70,10 +70,7 @@ public class PtPlateController {
     List<PtPlateRspDTO> listResults = pageRecords
         .stream().map((result) -> {
           PtPlateRspDTO ptPlateRspDTO = PtPlateController.ptPlateMapper(result);
-          // 最新状态
-          Optional<PtPlateStatus> status = ptPlateStatusService.findPtPlateLatestStatus(result.getId());
-          status.ifPresent(ptPlateStatus -> ptPlateRspDTO.setStatus(ptPlateStatus.getActualValue()));
-
+          ptPlateRspDTO.setStatus(ptPlateStatusService.findPtPlateLatestStatus(result.getId()));
           return ptPlateRspDTO;
         }).toList();
 
@@ -93,9 +90,7 @@ public class PtPlateController {
     PtPlateRspDTO ptPlateRspDTO = PtPlateController.ptPlateMapper(ptPlate);
 
     // 最新状态
-    Optional<PtPlateStatus> status = ptPlateStatusService.findPtPlateLatestStatus(ptPlate.getId());
-    status.ifPresent(ptPlateStatus -> ptPlateRspDTO.setStatus(ptPlateStatus.getActualValue()));
-
+    ptPlateRspDTO.setStatus(ptPlateStatusService.findPtPlateLatestStatus(ptPlate.getId()));
     // 状态列表
     Page<PtPlateStatus> pageRecords = ptPlateStatusService.findPtPlateStatuses(id, start, stop, pageable);
     List<PtPlateStatusRspDTO> listResults = pageRecords

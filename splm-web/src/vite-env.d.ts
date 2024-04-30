@@ -50,7 +50,7 @@ interface PlateInfo {
     cx: number,
     cy: number,
     enabled: boolean,
-    status: boolean,
+    status: string,
     statuses: CommonPage<StatusInfo>,
 }
 

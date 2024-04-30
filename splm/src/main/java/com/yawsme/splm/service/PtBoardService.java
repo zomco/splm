@@ -6,6 +6,8 @@ import com.digitalpetri.modbus.master.ModbusTcpMasterConfig;
 import com.digitalpetri.modbus.codec.Modbus;
 import com.digitalpetri.modbus.requests.ReadHoldingRegistersRequest;
 import com.digitalpetri.modbus.responses.ReadHoldingRegistersResponse;
+import com.yawsme.splm.common.dto.ptplate.PtPlateRspDTO;
+import com.yawsme.splm.controller.PtPlateController;
 import com.yawsme.splm.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -22,13 +25,17 @@ public class PtBoardService {
 
   private final ModbusService modbusService;
   PtBoardRepository ptBoardRepository;
+  PtPlateService ptPlateService;
 
   @Autowired
   public PtBoardService(
       PtBoardRepository ptBoardRepository,
-      ModbusService modbusService) {
+      ModbusService modbusService,
+      PtPlateService ptPlateService
+  ) {
     this.ptBoardRepository = ptBoardRepository;
     this.modbusService = modbusService;
+    this.ptPlateService = ptPlateService;
   }
 
   public Optional<PtBoard> findPtBoard(Long boardId) {
@@ -39,9 +46,9 @@ public class PtBoardService {
     return ptBoardRepository.findAll(pageable);
   }
 
-  public PtBoard inspectPtBoard(PtBoard ptBoard) {
-    modbusService.modbusRequest(ptBoard.getIp(), 502);
-    return ptBoard;
+  public void inspectPtBoard(PtBoard ptBoard) {
+    List<PtPlate> ptPlates = ptPlateService.findPtPlates(ptBoard.getId());
+    modbusService.modbusRequest(ptPlates, ptBoard.getIp());
   }
 
 }

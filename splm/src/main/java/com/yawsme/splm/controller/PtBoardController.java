@@ -84,11 +84,7 @@ public class PtBoardController {
     List<PtPlate> ptPlates = ptPlateService.findPtPlates(id);
     List<PtPlateRspDTO> listResults = ptPlates.stream().map((result) -> {
       PtPlateRspDTO ptPlateRspDTO = PtPlateController.ptPlateMapper(result);
-
-      // 最新状态
-      Optional<PtPlateStatus> status = ptPlateStatusService.findPtPlateLatestStatus(result.getId());
-      status.ifPresent(ptPlateStatus -> ptPlateRspDTO.setStatus(ptPlateStatus.getActualValue()));
-
+      ptPlateRspDTO.setStatus(ptPlateStatusService.findPtPlateLatestStatus(result.getId()));
       return ptPlateRspDTO;
     }).toList();
 
@@ -104,9 +100,8 @@ public class PtBoardController {
     PtBoard ptBoard = ptBoardService.findPtBoard(id)
         .orElseThrow(() -> new ControllerException(ResultCode.BOARD_NOT_EXIST));
 
-
+    ptBoardService.inspectPtBoard(ptBoard);
     return ResultUtil.data(ptBoardMapper(ptBoard));
   }
-
 
 }

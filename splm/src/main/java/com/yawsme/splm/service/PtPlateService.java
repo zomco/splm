@@ -38,7 +38,7 @@ public class PtPlateService {
     return ptPlateRepository.findOne(PtPlateSpec.is(id));
   }
 
-  public PtPlate savePtPlate(PtPlate ptPlate) {
-    return ptPlateRepository.save(ptPlate);
+  public void savePtPlate(PtPlate ptPlate) {
+    ptPlateRepository.save(ptPlate);
   }
 }
