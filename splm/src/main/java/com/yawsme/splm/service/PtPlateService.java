@@ -31,7 +31,7 @@ public class PtPlateService {
   }
 
   public List<PtPlate> findPtPlates(Long boardId) {
-    return ptPlateRepository.findAll(PtPlateSpec.hasBoard(boardId));
+    return ptPlateRepository.findAll(PtPlateSpec.orderByCoordinate(PtPlateSpec.hasBoard(boardId)));
   }
 
   public Optional<PtPlate> findPtPlate(Long id) {

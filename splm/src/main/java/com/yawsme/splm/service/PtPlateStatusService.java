@@ -33,7 +33,7 @@ public class PtPlateStatusService {
 
   public PtPlateStatusValue findPtPlateLatestStatus(Long plateId) {
     List<PtPlateStatus> statuses = ptPlateStatusRepository.findAll(PtPlateStatusSpec.orderByTime(PtPlateStatusSpec.hasPlate(plateId)));
-    if (statuses.isEmpty()) return PtPlateStatusValue.OFF;
+    if (statuses.isEmpty()) return PtPlateStatusValue.UNKNOWN;
     return statuses.get(0).getActualValue();
   }
 

@@ -1,7 +1,9 @@
 package com.yawsme.splm.controller;
 
+import com.yawsme.splm.common.dto.ptplate.PtPlateRspDTO;
 import com.yawsme.splm.common.exception.WebsocketException;
 import com.yawsme.splm.model.PtBoard;
+import com.yawsme.splm.model.PtPlate;
 import com.yawsme.splm.service.PtBoardService;
 import com.yawsme.splm.service.WebSocketService;
 import jakarta.websocket.*;
@@ -35,8 +37,8 @@ public class PtPlateEndpoint {
 
   @OnOpen
   public void onOpen(Session session, EndpointConfig config, @PathParam(value = "boardId") Long boardId) throws IOException, WebsocketException {
-    String clientId = websocketService.parseClientId(session);
-    log.info(String.format("websocket open %s %s", boardId, clientId));
+    String bid = websocketService.parseBid(session);
+    log.info(String.format("websocket open %s %s", boardId, bid));
     Optional<PtBoard> ptBoard = ptBoardService.findPtBoard(boardId);
     if (ptBoard.isEmpty()) {
       try {
@@ -46,19 +48,20 @@ public class PtPlateEndpoint {
       }
       return;
     }
-    this.ptBoards.put(clientId, ptBoard.get());
+    this.ptBoards.put(bid, ptBoard.get());
     websocketService.addWebsocketTask(ptBoard.get(), session);
     // 返回铁板状态
-    String text = websocketService.stringifyPtBoard(ptBoard.get());
+    List<PtPlateRspDTO> ptPlateRspDTOS = new ArrayList<>();
+    String text = websocketService.stringifyPtPlates(ptPlateRspDTOS);
     session.getBasicRemote().sendText(text);
   }
 
   @OnClose
   public void onClose(Session session, CloseReason reason) throws WebsocketException {
-    String clientId = websocketService.parseClientId(session);
+    String bid = websocketService.parseBid(session);
     //连接关闭
-    log.info(String.format("websocket close %s %s", clientId, reason.getCloseCode()));
-    PtBoard ptBoard = this.ptBoards.get(clientId);
+    log.info(String.format("websocket close %s %s", bid, reason.getCloseCode()));
+    PtBoard ptBoard = this.ptBoards.get(bid);
     if (ptBoard == null) {
       return;
     }
@@ -86,9 +89,9 @@ public class PtPlateEndpoint {
 
   @OnError
   public void onError(Session session, Throwable e) throws WebsocketException {
-    String clientId = websocketService.parseClientId(session);
+    String bid = websocketService.parseBid(session);
     //异常处理
-    log.info(String.format("websocket error %s %s", clientId, e.getMessage()));
+    log.info(String.format("websocket error %s %s", bid, e.getMessage()));
   }
 
 }

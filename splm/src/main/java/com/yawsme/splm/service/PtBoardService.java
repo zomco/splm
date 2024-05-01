@@ -13,10 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Slf4j
@@ -47,8 +49,12 @@ public class PtBoardService {
   }
 
   public void inspectPtBoard(PtBoard ptBoard) {
-    List<PtPlate> ptPlates = ptPlateService.findPtPlates(ptBoard.getId());
-    modbusService.modbusRequest(ptPlates, ptBoard.getIp());
+    modbusService.modbusRequest(ptBoard.getId(), ptBoard.getIp());
   }
 
+  @Scheduled(fixedDelay = 1000, initialDelay = 1000)
+  public void pollPtBoards() {
+    List<PtBoard> ptBoards = ptBoardRepository.findAll(PtBoardSpec.hasEnabled(true));
+    ptBoards.forEach(ptBoard -> modbusService.modbusRequest(ptBoard.getId(), ptBoard.getIp()));
+  }
 }

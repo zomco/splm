@@ -9,6 +9,7 @@ import {
     DatePicker,
     ConfigProvider,
     Typography,
+    message,
 } from 'antd';
 const { RangePicker } = DatePicker;
 import {useLoaderData} from "react-router-dom";
@@ -18,16 +19,19 @@ import dayjs from 'dayjs';
 const { Title } = Typography;
 
 import 'dayjs/locale/zh-cn';
+import {useState} from "react";
 
 dayjs.locale('zh-cn');
 
 export default function Information() {
     const response = useLoaderData() as CommonResponse<PlateInfo>;
+    const [isLoading, setIsLoading] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
     const plate = response.result;
 
-    console.log(plate)
     return (
         <div className="mt-10 w-full min-h-dvh">
+            {contextHolder}
             <Title level={3}>压板信息</Title>
             <Form
                 name="validate_other"
@@ -35,14 +39,22 @@ export default function Information() {
                 wrapperCol={{span: 14}}
                 onFinish={async (values) => {
                     console.log('Received values of form: ', values);
-                    return await fetch(`/api/plate/${plate.id}`, {
-                        method: "POST",
-                        headers: {
-                            "Accept": "application/json",
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(values)
-                    });
+                    setIsLoading(true);
+                    try {
+                        await fetch(`/api/plate/${plate.id}`, {
+                            method: "POST",
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(values)
+                        });
+                    } catch (error) {
+                        messageApi.open({ type: "error", content: '保存失败，请重试' });
+                        console.error(error);
+                    } finally {
+                        setIsLoading(false);
+                    }
                 }}
                 initialValues={{
                     'name': plate.name,
@@ -58,7 +70,7 @@ export default function Information() {
                 </Form.Item>
                 <Form.Item wrapperCol={{span: 12, offset: 6}}>
                     <Space>
-                        <Button type="primary" htmlType="submit">保存</Button>
+                        <Button type="primary" htmlType="submit" loading={isLoading}>保存</Button>
                     </Space>
                 </Form.Item>
             </Form>

@@ -11,7 +11,9 @@ public enum PtPlateStatusValue {
   @JsonProperty("0")
   OFF("0"),
   @JsonProperty("1")
-  ON("1");
+  ON("1"),
+  @JsonProperty("2")
+  UNKNOWN("2");
 
   private final String code;
 

@@ -19,7 +19,7 @@ public class PtPlateStatusSpec {
 
   public static Specification<PtPlateStatus> orderByTime(Specification<PtPlateStatus> spec) {
     return (root, query, builder) -> {
-      query.orderBy(builder.asc(root.get("createTime")));
+      query.orderBy(builder.desc(root.get("createTime")));
       return spec.toPredicate(root, query, builder);
     };
   }

@@ -10,8 +10,8 @@ public class PtBoardSpec {
     return (root, query, builder) -> builder.equal(root.get("id"), boardId);
   }
 
-  public static Specification<PtBoard> hasName(String name) {
-    return (root, query, builder) -> builder.equal(root.get("name"), name);
+  public static Specification<PtBoard> hasEnabled(Boolean enabled) {
+    return (root, query, builder) -> builder.equal(root.get("enabled"), enabled);
   }
 
 }
