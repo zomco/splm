@@ -48,6 +48,7 @@ public class PtPlateStatusController {
   static public PtPlateStatusRspDTO ptPlateStatusMapper(PtPlateStatus ptPlateStatus) {
     PtPlateStatusRspDTO result = new PtPlateStatusRspDTO();
     result.setId(ptPlateStatus.getId());
+    result.setPlateId(ptPlateStatus.getPlateId());
     result.setCreateTime(ptPlateStatus.getCreateTime());
     result.setActualValue(ptPlateStatus.getActualValue());
 

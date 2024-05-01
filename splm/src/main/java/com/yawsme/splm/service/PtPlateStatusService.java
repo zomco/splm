@@ -38,7 +38,7 @@ public class PtPlateStatusService {
   }
 
   public Page<PtPlateStatus> findPtPlateStatuses(Long plateId, LocalDateTime start, LocalDateTime stop, Pageable pageable) {
-    return ptPlateStatusRepository.findAll(PtPlateStatusSpec.hasPlate(plateId).and(PtPlateStatusSpec.hasTimeRange(start, stop)), pageable);
+    return ptPlateStatusRepository.findAll(PtPlateStatusSpec.orderByTime(PtPlateStatusSpec.hasPlate(plateId).and(PtPlateStatusSpec.hasTimeRange(start, stop))), pageable);
   }
 
   public void savePtPlateStatus(PtPlateStatus ptPlateStatus) {

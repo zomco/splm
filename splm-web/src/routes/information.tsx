@@ -15,13 +15,49 @@ const { RangePicker } = DatePicker;
 import {useLoaderData} from "react-router-dom";
 import locale from 'antd/locale/zh_CN';
 import dayjs from 'dayjs';
+import type { Dayjs } from 'dayjs';
 
 const { Title } = Typography;
 
 import 'dayjs/locale/zh-cn';
 import {useState} from "react";
+import {ColumnsType} from "antd/es/table";
 
 dayjs.locale('zh-cn');
+
+const columns: ColumnsType<StatusInfo> =                     [
+    {
+        title: '更新时间',
+        dataIndex: 'createTime',
+        align: 'center',
+        render: (text) => new Date(text).toLocaleString('zh-hans-CN'),
+        defaultSortOrder: 'descend',
+        sorter: (a, b) => Date.parse(String(a.createTime)) - Date.parse(String(b.createTime)),
+        width: 200,
+    },
+    {
+        title: '实际状态',
+        dataIndex: 'actualValue',
+        align: 'center',
+        render: (text) => text == true ? "投入" : "退出",
+        showSorterTooltip: { target: 'full-header' },
+        filters: [
+            {
+                text: '投入',
+                value: '1',
+            },
+            {
+                text: '退出',
+                value: '0',
+            },
+            {
+                text: '未知',
+                value: '2',
+            }
+        ],
+        onFilter: (value, record) => record.actualValue === value,
+    },
+];
 
 export default function Information() {
     const response = useLoaderData() as CommonResponse<PlateInfo>;
@@ -78,42 +114,29 @@ export default function Information() {
             <Title level={3}>巡检历史</Title>
             <Space style={{ marginBottom: 16 }}>
                 <ConfigProvider locale={locale}>
-                    <RangePicker size="large" showTime />
+                    <RangePicker
+                        size="large"
+                        showTime
+                        presets={[
+                            { label: '过去 7 天', value: [dayjs().add(-7, 'd'), dayjs()] },
+                            { label: '过去 14 天', value: [dayjs().add(-14, 'd'), dayjs()] },
+                            { label: '过去 30 天', value: [dayjs().add(-30, 'd'), dayjs()] },
+                            { label: '过去 90 天', value: [dayjs().add(-90, 'd'), dayjs()] },
+                        ]}
+                        onChange={(dates: null | (Dayjs | null)[], dateStrings: string[]) => {
+                            if (dates) {
+                                console.log('From: ', dates[0], ', to: ', dates[1]);
+                                console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
+                            } else {
+                                console.log('Clear');
+                            }
+                        }}
+                    />
                 </ConfigProvider>
                 <Button onClick={() => console.log("search by datetime")}>查询</Button>
             </Space>
             <Table
-                columns={
-                    [
-                        {
-                            title: '更新时间',
-                            dataIndex: 'createTime',
-                            align: 'center',
-                            render: (text) => new Date(text).toLocaleString('zh-hans-CN'),
-                            defaultSortOrder: 'descend',
-                            sorter: (a, b) => a.createTime - b.createTime,
-                            width: 200,
-                        },
-                        {
-                            title: '实际状态',
-                            dataIndex: 'actualValue',
-                            align: 'center',
-                            render: (text) => text == true ? "投入" : "退出",
-                            showSorterTooltip: { target: 'full-header' },
-                            filters: [
-                                {
-                                    text: '投入',
-                                    value: true,
-                                },
-                                {
-                                    text: '退出',
-                                    value: false,
-                                }
-                            ],
-                            onFilter: (value, record) => record.actualValue === value,
-                        },
-                    ]
-                }
+                columns={columns}
                 dataSource={plate.statuses.content}
                 rowKey="id"
                 pagination={{pageSize: 100}}
