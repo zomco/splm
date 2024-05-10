@@ -31,9 +31,19 @@ import java.util.Objects;
 public class PtPlate extends BaseEntity {
 
   @NotNull
-  @Column(nullable = false)
+  @Column()
   @Schema(name = "压板名称")
   private String name;
+
+  @NotNull
+  @Column()
+  @Schema(name = "压板名称1")
+  private String name1;
+
+  @NotNull
+  @Column()
+  @Schema(name = "压板名称2")
+  private String name2;
 
   @NotNull
   @Column(nullable = false)

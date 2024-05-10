@@ -10,6 +10,8 @@ import java.io.Serializable;
 public class PtPlateUpdateReqDTO implements Serializable {
 
   String name;
+  String name1;
+  String name2;
   Boolean enabled;
 }
 

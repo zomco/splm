@@ -15,6 +15,8 @@ public class PtPlateRspDTO implements Serializable {
   Long id;
   Long boardId;
   String name;
+  String name1;
+  String name2;
   Boolean enabled;
   Integer cx;
   Integer cy;

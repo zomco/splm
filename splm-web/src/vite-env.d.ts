@@ -47,6 +47,8 @@ interface StatusInfo {
 interface PlateInfo {
     id: string,
     name: string,
+    name1: string,
+    name2: string,
     cx: number,
     cy: number,
     enabled: boolean,

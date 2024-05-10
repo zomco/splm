@@ -71,10 +71,10 @@ export default function Dashboard() {
                         {_.map((__, j) =>
                             <div key={j} className="flex flex-col justify-between items-center h-46 p-2" style={{ opacity: __.enabled ? 1 : 0.4 }}>
                                 <Link to={`/info/${__.id}`}><Plate item={__} size={30} /></Link>
-                                <div className="mt-2 flex flex-col justify-around items-center bg-amber-400 border-2 border-gray-400 text-xs rounded">
-                                    <div className="w-full flex justify-center border-b-2 border-gray-400">LP11-L1</div>
-                                    <div className="w-full flex justify-center border-b-2 border-gray-400">110kV 5M、6M母差保护</div>
-                                    <div className="w-full flex justify-center">备用</div>
+                                <div className="mt-2 flex flex-col justify-around items-center bg-amber-400 border-2 border-gray-400 text-xs rounded min-w-36">
+                                    <div className="w-full flex justify-center border-b-2 border-gray-400 min-h-4">{__.name}</div>
+                                    <div className="w-full flex justify-center border-b-2 border-gray-400 min-h-4">{__.name1}</div>
+                                    <div className="w-full flex justify-center min-h-4">{__.name2}</div>
                                 </div>
                             </div>
                             )

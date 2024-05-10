@@ -24,12 +24,11 @@ public class PtPlateStatusSpec {
     };
   }
 
-  public static Specification<PtPlateStatus> hasTimeRange(LocalDateTime start, LocalDateTime stop) {
-    return (root, query, builder) -> {
-      Predicate predicate = builder.conjunction();
-      predicate.getExpressions().add(builder.greaterThanOrEqualTo(root.get("createTime"), start));
-      predicate.getExpressions().add(builder.lessThanOrEqualTo(root.get("createTime"), stop));
-      return predicate;
-    };
+  public static Specification<PtPlateStatus> beforeTheTime(LocalDateTime start) {
+    return (root, query, builder) -> builder.greaterThanOrEqualTo(root.get("createTime"), start);
+  }
+
+  public static Specification<PtPlateStatus> afterTheTime(LocalDateTime after) {
+    return (root, query, builder) -> builder.lessThanOrEqualTo(root.get("createTime"), after);
   }
 }

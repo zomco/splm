@@ -9,6 +9,9 @@ import Root from "./routes/root.tsx";
 import Dashboard from "./routes/dashboard.tsx";
 import Information from "./routes/information.tsx";
 import ErrorPage from "./error-page.tsx";
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
+dayjs.locale('zh-cn');
 
 const router = createBrowserRouter([
     {
@@ -27,7 +30,7 @@ const router = createBrowserRouter([
                 path: "info/:id",
                 element: <Information />,
                 loader: async ({ params}) => {
-                    return await fetch(`/api/plate/${params.id}`);
+                    return await fetch(`/api/plate/${params.id}?start=${encodeURIComponent(dayjs().add(-1, 'd').format('YYYY-MM-DDTHH:mm:ssZ'))}&stop=${encodeURIComponent(dayjs().format('YYYY-MM-DDTHH:mm:ssZ'))}&page=0&size=100`);
                 },
             }
         ]

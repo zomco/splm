@@ -58,12 +58,19 @@ const columns: ColumnsType<StatusInfo> =                     [
         onFilter: (value, record) => record.actualValue === value,
     },
 ];
+let dateStart = dayjs().add(-1, 'd');
+let dateStop = dayjs();
+let pageCurrent = 1;
+let pageSize = 100;
+const plateUrl = (id: string) => `/api/plate/${id}?start=${encodeURIComponent(dateStart.format('YYYY-MM-DDTHH:mm:ssZ'))}&stop=${encodeURIComponent(dateStop.format('YYYY-MM-DDTHH:mm:ssZ'))}&page=${pageCurrent-1}&size=${pageSize}`;
 
 export default function Information() {
     const response = useLoaderData() as CommonResponse<PlateInfo>;
     const [isLoading, setIsLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const plate = response.result;
+    const [statuses, setStatuses] = useState<StatusInfo[]>(plate.statuses.content);
+    const [total, setTotal] = useState<number>(0);
 
     return (
         <div className="mt-10 w-full min-h-dvh">
@@ -94,11 +101,19 @@ export default function Information() {
                 }}
                 initialValues={{
                     'name': plate.name,
+                    'name1': plate.name1,
+                    'name2': plate.name2,
                     'enabled': plate.enabled,
                 }}
                 style={{maxWidth: 600}}
             >
-                <Form.Item name="name" label="压板名称">
+                <Form.Item name="name" label="压板标签1">
+                    <Input/>
+                </Form.Item>
+                <Form.Item name="name1" label="压板标签2">
+                    <Input/>
+                </Form.Item>
+                <Form.Item name="name2" label="压板标签3">
                     <Input/>
                 </Form.Item>
                 <Form.Item name="enabled" label="启用状态" valuePropName="checked">
@@ -118,28 +133,55 @@ export default function Information() {
                         size="large"
                         showTime
                         presets={[
+                            { label: '过去 1 天', value: [dayjs().add(-1, 'd'), dayjs()] },
                             { label: '过去 7 天', value: [dayjs().add(-7, 'd'), dayjs()] },
                             { label: '过去 14 天', value: [dayjs().add(-14, 'd'), dayjs()] },
-                            { label: '过去 30 天', value: [dayjs().add(-30, 'd'), dayjs()] },
-                            { label: '过去 90 天', value: [dayjs().add(-90, 'd'), dayjs()] },
+                            { label: '过去 21 天', value: [dayjs().add(-21, 'd'), dayjs()] },
+                            { label: '过去 1 个月', value: [dayjs().add(-1, 'month'), dayjs()] },
+                            { label: '过去 3 个月', value: [dayjs().add(-3, 'month'), dayjs()] },
+                            { label: '过去 6 个月', value: [dayjs().add(-6, 'month'), dayjs()] },
+                            { label: '过去 1 年', value: [dayjs().add(-1, 'year'), dayjs()] },
                         ]}
-                        onChange={(dates: null | (Dayjs | null)[], dateStrings: string[]) => {
+                        defaultValue={[dateStart, dateStop]}
+                        onChange={async (dates: null | (Dayjs | null)[], dateStrings: string[]) => {
                             if (dates) {
-                                console.log('From: ', dates[0], ', to: ', dates[1]);
-                                console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
+                                console.log(`Date from ${dateStrings[0]} to ${dateStrings[1]}`);
+                                try {
+                                    const [ start, stop ] = dates as Dayjs[];
+                                    dateStart = start;
+                                    dateStop = stop;
+                                    const rsp = await fetch(plateUrl(plate.id));
+                                    const { result: plate_ }= await rsp.json() as CommonResponse<PlateInfo>;
+                                    setStatuses(plate_.statuses.content);
+                                    setTotal(plate_.statuses.totalElements);
+                                } catch (error) {
+                                    console.error(error);
+                                }
                             } else {
                                 console.log('Clear');
                             }
                         }}
                     />
                 </ConfigProvider>
-                <Button onClick={() => console.log("search by datetime")}>查询</Button>
             </Space>
             <Table
                 columns={columns}
-                dataSource={plate.statuses.content}
+                dataSource={statuses}
                 rowKey="id"
-                pagination={{pageSize: 100}}
+                pagination={{ current: pageCurrent, pageSize: pageSize, total: total }}
+                onChange={async (page) => {
+                    pageCurrent = page.current as number;
+                    pageSize = page.pageSize as number;
+                    console.log(`Page update ${pageCurrent} ${pageSize}`);
+                    try {
+                        const rsp = await fetch(plateUrl(plate.id));
+                        const { result: plate_ }= await rsp.json() as CommonResponse<PlateInfo>;
+                        setStatuses(plate_.statuses.content);
+                        setTotal(plate_.statuses.totalElements);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }}
             />
         </div>
     );

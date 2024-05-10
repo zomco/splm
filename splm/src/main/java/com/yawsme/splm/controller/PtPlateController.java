@@ -54,6 +54,8 @@ public class PtPlateController {
     result.setId(ptPlate.getId());
     result.setBoardId(ptPlate.getBoardId());
     result.setName(ptPlate.getName());
+    result.setName1(ptPlate.getName1());
+    result.setName2(ptPlate.getName2());
     result.setEnabled(ptPlate.getEnabled());
     result.setCx(ptPlate.getCx());
     result.setCy(ptPlate.getCy());
@@ -81,8 +83,8 @@ public class PtPlateController {
   @GetMapping("/{id}")
   public ResultMessage<PtPlateRspDTO> retrievePtPlate(
       @PathVariable Long id,
-      LocalDateTime start,
-      LocalDateTime stop,
+      @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+      @RequestParam("stop") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime stop,
       Pageable pageable
   ) {
     PtPlate ptPlate = ptPlateService.findPtPlate(id)
@@ -111,6 +113,12 @@ public class PtPlateController {
         .orElseThrow(() -> new ControllerException(ResultCode.PLATE_NOT_EXIST));
     if (sensorUpdateReqDTO.getName() != null) {
       ptPlate.setName(sensorUpdateReqDTO.getName());
+    }
+    if (sensorUpdateReqDTO.getName1() != null) {
+      ptPlate.setName1(sensorUpdateReqDTO.getName1());
+    }
+    if (sensorUpdateReqDTO.getName2() != null) {
+      ptPlate.setName2(sensorUpdateReqDTO.getName2());
     }
     if (sensorUpdateReqDTO.getEnabled() != null) {
       ptPlate.setEnabled(sensorUpdateReqDTO.getEnabled());
