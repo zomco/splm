@@ -67,23 +67,20 @@ public class ModbusService {
       // 解析行数据
       for (int i = 0; i < row; i++) {
         int value = (Byte.toUnsignedInt(bytes[2*i]) << 8) + Byte.toUnsignedInt(bytes[2*i + 1]);
-        boolean valid = (value & (1 << 15)) > 0 ;
-        log.info("Response Row {} Value {}, Valid {}", i, value, valid);
+        boolean invalid = (value & (1 << 15)) > 0 ;
+        log.info("Response Row {} Value {}, invalid {}", i, value, invalid);
+        // 跳过无效行数据
+        if (invalid) continue;
         // 解析列数据
         for (int j = 0; j < column; j++) {
           PtPlate ptPlate = ptPlates.get(i * column + j);
           // 只更新使能的压板
-          if (!ptPlate.getEnabled()) {
-//            log.info("Response Row {} Column {} Plate {}, Skip for disabled", i, j, ptPlate.getId());
-            continue;
-          }
+          if (!ptPlate.getEnabled()) continue;
+          // 获取实际数值
           PtPlateStatusValue actualValue = (value & (1 << j)) > 0 ? PtPlateStatusValue.ON : PtPlateStatusValue.OFF;
           PtPlateStatusValue ptPlateStatusValue = ptPlateStatusService.findPtPlateLatestStatus(ptPlate.getId());
           // 只更新状态变化的压板
-          if (ptPlateStatusValue == actualValue) {
-            // log.info("Response Column: {}");
-            continue;
-          }
+          if (ptPlateStatusValue == actualValue) continue;
           log.info("Response Row {} Column {} Plate {}, ActualValue {}, CurrentValue {}", i, j, ptPlate.getId(), actualValue, ptPlateStatusValue);
           // 保存新状态到数据库
           PtPlateStatus ptPlateStatus = new PtPlateStatus();

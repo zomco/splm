@@ -27,7 +27,7 @@ export default function Dashboard() {
     const [messageApi, contextHolder] = message.useMessage();
     useEffect(() => {
         console.log("component mount")
-        const socket = new WebSocket(`ws://127.0.0.1:8080/ws/board/${boardId}?bid=${generateBrowserId()}`);
+        const socket = new WebSocket(`ws://${window.location.host}/ws/board/${boardId}?bid=${generateBrowserId()}`);
         socket.addEventListener("open", () => {
             socket.send("Websocket server connected");
             messageApi.open({type: "success", content: "已连接"}).then(r => console.log(r));

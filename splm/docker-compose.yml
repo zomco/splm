@@ -1,27 +1,28 @@
 services:
 
-#  app:
-#    container_name: app
-#    build:
-#      context: .
-#      target: production
-#    ports:
-#      - "48080:8080"
-#    restart: always
-#    depends_on:
-#      - mysql
-#      - redis
-#    volumes:
-#      - "./docker/app/media:/app/media"
-#      - "./docker/app/log:/app/log"
-#      - "./docker/app/temp:/app/temp"
-#    links:
-#      - mysql
-#      - redis
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/splm?useUnicode=true&characterEncoding=utf8&useSSL=false
-#      - SPRING_DATA_REDIS_HOST=redis
-#    profiles: [dev, prod]
+  app:
+    container_name: app
+    build:
+      context: .
+      target: production
+    ports:
+      - "48080:8080"
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - "./docker/app/media:/app/media"
+      - "./docker/app/log:/app/log"
+      - "./docker/app/temp:/app/temp"
+    links:
+      - mysql
+      - redis
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/splm?useUnicode=true&characterEncoding=utf8&useSSL=false
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_PROFILES_ACTIVE=prod
+    profiles: [prod]
 
   redis:
     container_name: redis
@@ -31,7 +32,7 @@ services:
     restart: always
     volumes:
       - "./docker/redis/data:/data"
-    profiles: [dev]
+    profiles: [dev, prod]
 
   mysql:
     container_name: mysql
@@ -49,4 +50,4 @@ services:
       - MYSQL_PASSWORD=test1234.
       - MYSQL_ROOT_PASSWORD=test1234.
     command: mysqld --default-authentication-plugin=mysql_native_password --skip-ssl --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    profiles: [dev]
+    profiles: [dev, prod]

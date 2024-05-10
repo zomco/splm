@@ -3,7 +3,6 @@ export default function Plate({ item, size } : { item: PlateInfo, size: number }
     return (
         <div
              className="relative">
-            {/*<div className="background"></div>*/}
             <div style={{
                 "width": `${size}px`,
                 "height": `${size*4}px`,
