@@ -18,16 +18,17 @@ export default function Root() {
                     width: '100%',
                     display: 'flex',
                     alignItems: 'center',
+                    padding: `0 ${4}vw`
                 }}
             >
-                <Link to="/" className="text-white text-3xl">压板状态监控系统</Link>
+                <Link to="/" className="text-white text-2xl">压板状态监控系统</Link>
             </Header>
-            <Content style={{ padding: '0 48px' }}>
+            <Content style={{ padding: `0 ${2}vw` }}>
                 <div
                     className="flex justify-center items-center"
                     style={{
-                        padding: 24,
-                        minHeight: 380,
+                        padding: `${2}vw`,
+                        minHeight: `${100}vw`,
                         background: colorBgContainer,
                         borderRadius: borderRadiusLG,
                     }}

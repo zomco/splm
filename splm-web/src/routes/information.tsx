@@ -73,7 +73,7 @@ export default function Information() {
     const [total, setTotal] = useState<number>(0);
 
     return (
-        <div className="mt-10 w-full min-h-dvh">
+        <div className="w-screen flex flex-col" style={{ marginTop: `${1}vw` }}>
             {contextHolder}
             <Title level={3}>压板信息</Title>
             <Form

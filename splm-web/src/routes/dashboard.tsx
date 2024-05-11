@@ -64,17 +64,17 @@ export default function Dashboard() {
         }
     }, [boardId]);
     return (
-        <div className="mt-10 w-full flex flex-col flex-nowrap bg-white rounded-md border-8 border-red-600 last:border-b-0">
+        <div className="w-screen flex flex-col flex-nowrap bg-white rounded-md border-red-600" style={{ marginTop: `${1}vw`, borderWidth: `${1}vw` }}>
             {contextHolder}
             {platesTree.map((_, i) =>
-                    <div className="w-full flex flex-row flex-nowrap justify-around border-b-8 border-b-red-600" key={i}>
+                    <div className="w-full flex flex-row flex-nowrap justify-around border-b-red-600" style={{ borderBottomWidth: i === platesTree.length - 1 ? 0 : `${1}vw` }} key={i}>
                         {_.map((__, j) =>
-                            <div key={j} className="flex flex-col justify-between items-center h-46 p-2" style={{ opacity: __.enabled ? 1 : 0.4 }}>
-                                <Link to={`/info/${__.id}`}><Plate item={__} size={30} /></Link>
-                                <div className="mt-2 flex flex-col justify-around items-center bg-amber-400 border-2 border-gray-400 text-xs rounded min-w-36">
-                                    <div className="w-full flex justify-center border-b-2 border-gray-400 min-h-4">{__.name}</div>
-                                    <div className="w-full flex justify-center border-b-2 border-gray-400 min-h-4">{__.name1}</div>
-                                    <div className="w-full flex justify-center min-h-4">{__.name2}</div>
+                            <div key={j} className="flex flex-col justify-between items-center" style={{ opacity: __.enabled ? 1 : 0.4, padding: `${1}vw` }}>
+                                <Link to={`/info/${__.id}`}><Plate item={__} size={2} /></Link>
+                                <div className="flex flex-col justify-around items-center bg-amber-400 border-gray-400 text-xs rounded" style={{ width: `${2*4}vw`, marginTop: `${0.4}vw`, borderWidth: `${0.1}vw` }}>
+                                    <div className="w-full flex justify-center items-center border-gray-400" style={{ height: `${1}vw`, borderBottomWidth: `${0.1}vw`, fontSize: `${0.7}vw` }}>{__.name}</div>
+                                    <div className="w-full flex justify-center items-center border-gray-400" style={{ height: `${1}vw`, borderBottomWidth: `${0.1}vw`, fontSize: `${0.7}vw` }}>{__.name1}</div>
+                                    <div className="w-full flex justify-center items-center" style={{ height: `${1}vw`, fontSize: `${0.7}vw` }}>{__.name2}</div>
                                 </div>
                             </div>
                             )
