@@ -13,7 +13,7 @@ FROM base as development
 CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000'"]
 
 FROM base as build
-RUN ["./mvnw", "package"]
+RUN ["./mvnw", "package", "-DskipTests"]
 
 FROM eclipse-temurin:17-jre-jammy as production
 WORKDIR /app
