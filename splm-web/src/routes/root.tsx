@@ -25,7 +25,7 @@ export default function Root() {
             </Header>
             <Content style={{ padding: `0 ${2}vw` }}>
                 <div
-                    className="flex justify-center items-center"
+                    className="flex justify-center"
                     style={{
                         padding: `${2}vw`,
                         minHeight: `${100}vw`,

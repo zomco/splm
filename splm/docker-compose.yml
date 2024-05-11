@@ -44,6 +44,7 @@ services:
       - "./docker/mysql/data:/var/lib/mysql"
       - "./docker/mysql/log:/var/log/mysql"
       - "./docker/mysql/config:/etc/mysql/conf.d"
+      - "./scripts/dump.sql:/docker-entrypoint-initdb.d/dump.sql"
     environment:
       - MYSQL_DATABASE=splm
       - MYSQL_USER=splm

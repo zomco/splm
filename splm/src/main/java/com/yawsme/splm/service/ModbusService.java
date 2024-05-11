@@ -44,10 +44,10 @@ public class ModbusService {
     this.ptPlateService = ptPlateService;
   }
 
-  public void modbusRequest(Long boardId, String ip) {
+  public void modbusRequest(Long boardId, String ip, Integer port) {
     ModbusTcpMasterConfig config = new ModbusTcpMasterConfig
         .Builder(ip)
-        .setPort(502)
+        .setPort(port)
         .build();
     ModbusTcpMaster master = new ModbusTcpMaster(config);
     master.connect();

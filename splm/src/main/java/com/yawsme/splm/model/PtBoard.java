@@ -45,6 +45,11 @@ public class PtBoard extends BaseEntity {
   @Schema(name = "铁板地址")
   private String ip;
 
+  @NotNull
+  @Column(nullable = false)
+  @Schema(name = "铁板端口")
+  private Integer port;
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

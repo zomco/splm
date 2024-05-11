@@ -70,7 +70,7 @@ export default function Dashboard() {
                     <div className="w-full flex flex-row flex-nowrap justify-around border-b-red-600" style={{ borderBottomWidth: i === platesTree.length - 1 ? 0 : `${1}vw` }} key={i}>
                         {_.map((__, j) =>
                             <div key={j} className="flex flex-col justify-between items-center" style={{ opacity: __.enabled ? 1 : 0.4, padding: `${1}vw` }}>
-                                <Link to={`/info/${__.id}`}><Plate item={__} size={2} /></Link>
+                                <Link className="flex justify-center" to={`/info/${__.id}`}><Plate item={__} size={1.7} /></Link>
                                 <div className="flex flex-col justify-around items-center bg-amber-400 border-gray-400 text-xs rounded" style={{ width: `${2*4}vw`, marginTop: `${0.4}vw`, borderWidth: `${0.1}vw` }}>
                                     <div className="w-full flex justify-center items-center border-gray-400" style={{ height: `${1}vw`, borderBottomWidth: `${0.1}vw`, fontSize: `${0.7}vw` }}>{__.name}</div>
                                     <div className="w-full flex justify-center items-center border-gray-400" style={{ height: `${1}vw`, borderBottomWidth: `${0.1}vw`, fontSize: `${0.7}vw` }}>{__.name1}</div>

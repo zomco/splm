@@ -49,12 +49,12 @@ public class PtBoardService {
   }
 
   public void inspectPtBoard(PtBoard ptBoard) {
-    modbusService.modbusRequest(ptBoard.getId(), ptBoard.getIp());
+    modbusService.modbusRequest(ptBoard.getId(), ptBoard.getIp(), ptBoard.getPort());
   }
 
   @Scheduled(fixedDelay = 1000, initialDelay = 1000)
   public void pollPtBoards() {
     List<PtBoard> ptBoards = ptBoardRepository.findAll(PtBoardSpec.hasEnabled(true));
-    ptBoards.forEach(ptBoard -> modbusService.modbusRequest(ptBoard.getId(), ptBoard.getIp()));
+    ptBoards.forEach(ptBoard -> modbusService.modbusRequest(ptBoard.getId(), ptBoard.getIp(), ptBoard.getPort()));
   }
 }
