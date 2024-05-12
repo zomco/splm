@@ -16,6 +16,7 @@ public class PtPlateSpec {
       return spec.toPredicate(root, query, builder);
     };
   }
+
   public static Specification<PtPlate> hasBoard(Long boardId) {
     return (root, query, builder) -> builder.equal(root.get("boardId"), boardId);
   }

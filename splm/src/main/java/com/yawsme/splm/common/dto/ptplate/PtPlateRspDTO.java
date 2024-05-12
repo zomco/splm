@@ -6,7 +6,6 @@ import lombok.Data;
 import org.springframework.data.domain.Page;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @Schema(name = "压板响应")

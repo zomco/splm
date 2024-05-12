@@ -3,14 +3,12 @@ package com.yawsme.splm.controller;
 import com.yawsme.splm.common.dto.ptplate.PtPlateRspDTO;
 import com.yawsme.splm.common.exception.WebsocketException;
 import com.yawsme.splm.model.PtBoard;
-import com.yawsme.splm.model.PtPlate;
 import com.yawsme.splm.service.PtBoardService;
 import com.yawsme.splm.service.WebSocketService;
 import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +26,9 @@ public class PtPlateEndpoint {
   Map<String, PtBoard> ptBoards = new HashMap<>();
 
   @Autowired
-  public void setSensorTaskService(WebSocketService websocketService) { PtPlateEndpoint.websocketService = websocketService; }
+  public void setSensorTaskService(WebSocketService websocketService) {
+    PtPlateEndpoint.websocketService = websocketService;
+  }
 
   @Autowired
   public void setSensorService(PtBoardService ptBoardService) {

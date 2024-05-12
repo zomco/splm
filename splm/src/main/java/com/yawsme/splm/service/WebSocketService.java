@@ -2,20 +2,13 @@ package com.yawsme.splm.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yawsme.splm.common.dto.ptplate.PtBoardRspDTO;
 import com.yawsme.splm.common.dto.ptplate.PtPlateRspDTO;
 import com.yawsme.splm.common.exception.WebsocketException;
-import com.yawsme.splm.controller.PtBoardController;
-import com.yawsme.splm.controller.PtPlateController;
 import com.yawsme.splm.model.PtBoard;
-import com.yawsme.splm.model.PtPlate;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -73,7 +66,7 @@ public class WebSocketService {
   public String parseBid(Session session) throws WebsocketException {
     Pattern pat = Pattern.compile("([^&=]+)=([^&]*)");
     Matcher matcher = pat.matcher(session.getQueryString());
-    Map<String,String> params = new HashMap<>();
+    Map<String, String> params = new HashMap<>();
     while (matcher.find()) {
       params.put(matcher.group(1), matcher.group(2));
     }

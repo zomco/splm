@@ -8,7 +8,6 @@ import com.yawsme.splm.common.enums.ResultUtil;
 import com.yawsme.splm.common.exception.ControllerException;
 import com.yawsme.splm.model.PtBoard;
 import com.yawsme.splm.model.PtPlate;
-import com.yawsme.splm.model.PtPlateStatus;
 import com.yawsme.splm.service.PtBoardService;
 import com.yawsme.splm.service.PtPlateService;
 import com.yawsme.splm.service.PtPlateStatusService;
@@ -20,10 +19,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController

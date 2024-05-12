@@ -1,12 +1,12 @@
 package com.yawsme.splm.controller;
 
+import com.yawsme.splm.common.dto.ptplate.PtPlateRspDTO;
 import com.yawsme.splm.common.dto.ptplate.PtPlateStatusRspDTO;
 import com.yawsme.splm.common.dto.ptplate.PtPlateUpdateReqDTO;
 import com.yawsme.splm.common.enums.ResultCode;
 import com.yawsme.splm.common.enums.ResultMessage;
 import com.yawsme.splm.common.enums.ResultUtil;
 import com.yawsme.splm.common.exception.ControllerException;
-import com.yawsme.splm.common.dto.ptplate.PtPlateRspDTO;
 import com.yawsme.splm.model.PtPlate;
 import com.yawsme.splm.model.PtPlateStatus;
 import com.yawsme.splm.service.PtPlateService;
@@ -24,9 +24,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
