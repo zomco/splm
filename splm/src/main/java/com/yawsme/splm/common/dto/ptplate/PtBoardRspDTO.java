@@ -1,5 +1,7 @@
 package com.yawsme.splm.common.dto.ptplate;
 
+import com.yawsme.splm.common.enums.PtBoardStatusValue;
+import com.yawsme.splm.common.enums.PtPlateStatusValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -13,6 +15,7 @@ public class PtBoardRspDTO implements Serializable {
   Long id;
   String name;
   Boolean enabled;
+  PtBoardStatusValue status;
   List<PtPlateRspDTO> plates;
 }
 

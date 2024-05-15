@@ -2,6 +2,7 @@ package com.yawsme.splm.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yawsme.splm.common.dto.ptplate.PtBoardRspDTO;
 import com.yawsme.splm.common.dto.ptplate.PtPlateRspDTO;
 import com.yawsme.splm.common.exception.WebsocketException;
 import com.yawsme.splm.model.PtBoard;
@@ -82,9 +83,9 @@ public class WebSocketService {
     return bid;
   }
 
-  public String stringifyPtPlates(List<PtPlateRspDTO> ptPlateRspDTOS) throws JsonProcessingException {
+  public String stringifyMessage(PtBoardRspDTO ptBoardRspDTO) throws JsonProcessingException {
     ObjectMapper om = new ObjectMapper();
-    return om.writeValueAsString(ptPlateRspDTOS);
+    return om.writeValueAsString(ptBoardRspDTO);
   }
 
   private static class WebSocketTask {

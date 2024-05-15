@@ -1,5 +1,6 @@
 package com.yawsme.splm.controller;
 
+import com.yawsme.splm.common.dto.ptplate.PtBoardRspDTO;
 import com.yawsme.splm.common.dto.ptplate.PtPlateRspDTO;
 import com.yawsme.splm.common.exception.WebsocketException;
 import com.yawsme.splm.model.PtBoard;
@@ -51,8 +52,10 @@ public class PtPlateEndpoint {
     this.ptBoards.put(bid, ptBoard.get());
     websocketService.addWebsocketTask(ptBoard.get(), session);
     // 返回铁板状态
+    PtBoardRspDTO ptBoardRspDTO = PtBoardController.ptBoardMapper(ptBoard.get());
     List<PtPlateRspDTO> ptPlateRspDTOS = new ArrayList<>();
-    String text = websocketService.stringifyPtPlates(ptPlateRspDTOS);
+    ptBoardRspDTO.setPlates(ptPlateRspDTOS);
+    String text = websocketService.stringifyMessage(ptBoardRspDTO);
     session.getBasicRemote().sendText(text);
   }
 

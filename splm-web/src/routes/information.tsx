@@ -10,9 +10,10 @@ import {
     ConfigProvider,
     Typography,
     message,
+    Breadcrumb,
 } from 'antd';
 const { RangePicker } = DatePicker;
-import {useLoaderData} from "react-router-dom";
+import {Link, useLoaderData} from "react-router-dom";
 import locale from 'antd/locale/zh_CN';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
@@ -75,6 +76,14 @@ export default function Information() {
     return (
         <div className="w-screen flex flex-col" style={{ marginTop: `${1}vw` }}>
             {contextHolder}
+            <Breadcrumb
+                className="mb-5"
+                items={[{
+                    title: <Link to="/">主界面</Link>,
+                }, {
+                    title: <Link to={`/info/${plate.id}`}>压板信息</Link>,
+                }]}
+            />
             <Title level={3}>压板信息</Title>
             <Form
                 name="validate_other"

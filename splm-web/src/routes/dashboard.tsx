@@ -25,6 +25,7 @@ export default function Dashboard() {
     const initPlatesTree = getPlatesTree(response, 7, 9);
     const [platesTree, setPlatesTree] = useState<PlateInfo[][]>(initPlatesTree);
     const [messageApi, contextHolder] = message.useMessage();
+    const [board, setBoard] = useState<BoardInfo>();
     useEffect(() => {
         console.log("component mount")
         const socket = new WebSocket(`ws://${window.location.host}/ws/board/${boardId}?bid=${generateBrowserId()}`);
@@ -34,12 +35,16 @@ export default function Dashboard() {
         });
         socket.addEventListener("message", (event) => {
             try {
-                const updates = JSON.parse(event.data) as PlateInfo[];
-                if (!updates.length) return;
+                const updatedBoard = JSON.parse(event.data) as BoardInfo;
+                if (!updatedBoard) return;
+                setBoard(updatedBoard);
+
+                const updatedPlates = updatedBoard.plates;
+                if (updatedPlates.length === 0) return;
                 setPlatesTree((lastPlatesTree) => {
                     return lastPlatesTree.map((_, i) => _.map((__, j) => {
                         const newPlate = Object.assign({}, __);
-                        const update = updates.find((update) => update.cy - 1 === i && update.cx - 1 === j);
+                        const update = updatedPlates.find((updatePlate) => updatePlate.cy - 1 === i && updatePlate.cx - 1 === j);
                         if (update) {
                             newPlate.status = update.status;
                         }
@@ -64,12 +69,12 @@ export default function Dashboard() {
         }
     }, [boardId]);
     return (
-        <div className="w-screen flex flex-col flex-nowrap bg-white rounded-md border-red-600" style={{ marginTop: `${1}vw`, borderWidth: `${1}vw` }}>
+        <div className="w-screen flex flex-col flex-nowrap bg-white rounded-md border-red-600" style={{ opacity: board && board.status === '1' ? 1 : 0.2, marginTop: `${1}vw`, borderWidth: `${1}vw` }}>
             {contextHolder}
             {platesTree.map((_, i) =>
                     <div className="w-full flex flex-row flex-nowrap justify-around border-b-red-600" style={{ borderBottomWidth: i === platesTree.length - 1 ? 0 : `${1}vw` }} key={i}>
                         {_.map((__, j) =>
-                            <div key={j} className="flex flex-col justify-between items-center" style={{ opacity: __.enabled ? 1 : 0.4, padding: `${1}vw` }}>
+                            <div key={j} className="flex flex-col justify-between items-center" style={{ filter: __.enabled ? 'grayscale(0)' : 'grayscale(1)', padding: `${1}vw` }}>
                                 <Link className="flex justify-center" to={`/info/${__.id}`}><Plate item={__} size={1.7} /></Link>
                                 <div className="flex flex-col justify-around items-center bg-amber-400 border-gray-400 text-xs rounded" style={{ width: `${2*4}vw`, marginTop: `${0.4}vw`, borderWidth: `${0.1}vw` }}>
                                     <div className="w-full flex justify-center items-center border-gray-400" style={{ height: `${1}vw`, borderBottomWidth: `${0.1}vw`, fontSize: `${0.7}vw` }}>{__.name}</div>

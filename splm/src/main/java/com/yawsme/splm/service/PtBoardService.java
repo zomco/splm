@@ -1,5 +1,6 @@
 package com.yawsme.splm.service;
 
+import com.yawsme.splm.common.enums.PtBoardStatusValue;
 import com.yawsme.splm.model.PtBoard;
 import com.yawsme.splm.model.PtBoardRepository;
 import com.yawsme.splm.model.PtBoardSpec;
@@ -76,13 +77,13 @@ public class PtBoardService {
   }
 
   public void inspectPtBoard(PtBoard ptBoard) {
-    modbusService.shortConnect(ptBoard.getId(), ptBoard.getIp(), ptBoard.getPort());
+    modbusService.shortConnect(ptBoard);
   }
 
   @Scheduled(fixedDelay = 1000, initialDelay = 1000)
   public void pollPtBoards() {
     List<PtBoard> ptBoards = ptBoardRepository.findAll(PtBoardSpec.hasEnabled(true));
-    ptBoards.forEach(ptBoard -> modbusService.shortConnect(ptBoard.getId(), ptBoard.getIp(), ptBoard.getPort()));
+    ptBoards.forEach(modbusService::shortConnect);
   }
 
 }

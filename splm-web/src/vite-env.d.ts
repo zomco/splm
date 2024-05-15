@@ -61,5 +61,6 @@ interface BoardInfo {
     name: string,
     enabled: boolean,
     ip: string,
+    status: string,
     plates: PlateInfo[],
 }

@@ -1,6 +1,7 @@
 package com.yawsme.splm.model;
 
 
+import com.yawsme.splm.common.enums.PtBoardStatusValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,6 +50,11 @@ public class PtBoard extends BaseEntity {
   @Column(nullable = false)
   @Schema(name = "铁板端口")
   private Integer port;
+
+  @NotNull
+  @Column(nullable = false)
+  @Schema(name = "压板状态")
+  private PtBoardStatusValue status = PtBoardStatusValue.UNKNOWN;
 
   @Override
   public boolean equals(Object o) {

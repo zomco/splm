@@ -1,9 +1,14 @@
 package com.yawsme.splm.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.yawsme.splm.common.dto.ptplate.PtBoardRspDTO;
 import com.yawsme.splm.common.dto.ptplate.PtPlateRspDTO;
+import com.yawsme.splm.common.enums.PtBoardStatusValue;
 import com.yawsme.splm.common.enums.PtPlateStatusValue;
+import com.yawsme.splm.controller.PtBoardController;
 import com.yawsme.splm.controller.PtPlateController;
+import com.yawsme.splm.model.PtBoard;
+import com.yawsme.splm.model.PtBoardRepository;
 import com.yawsme.splm.model.PtPlate;
 import com.yawsme.splm.model.PtPlateStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HexFormat;
-import java.util.List;
+import java.util.*;
 
 
 @Slf4j
@@ -61,16 +63,19 @@ public class ModbusService {
   PtPlateStatusService ptPlateStatusService;
   WebSocketService webSocketService;
   PtPlateService ptPlateService;
+  PtBoardRepository ptBoardRepository;
 
   @Autowired
   public ModbusService(
       PtPlateStatusService ptPlateStatusService,
       WebSocketService webSocketService,
-      PtPlateService ptPlateService
+      PtPlateService ptPlateService,
+      PtBoardRepository ptBoardRepository
   ) {
     this.ptPlateStatusService = ptPlateStatusService;
     this.webSocketService = webSocketService;
     this.ptPlateService = ptPlateService;
+    this.ptBoardRepository = ptBoardRepository;
   }
 
   public static int calculateCRC(byte[] data) {
@@ -114,13 +119,13 @@ public class ModbusService {
     return hexFormat.parseHex(hexString);
   }
 
-  public void parseMessage(Long boardId, byte[] bytes) {
+  public void parseMessage(PtBoard ptBoard, byte[] bytes) {
     // 获取铁板数据
     byte[] dataBytes = Arrays.copyOfRange(bytes, 3, 3 + bytes[2]);
     int column = 9;
     int row = 7;
     // 查出铁板上所有压板
-    List<PtPlate> ptPlates = ptPlateService.findPtPlates(boardId);
+    List<PtPlate> ptPlates = ptPlateService.findPtPlates(ptBoard.getId());
     List<PtPlateRspDTO> ptPlateRspDTOS = new ArrayList<>();
     // 解析行数据
     for (int i = 0; i < row; i++) {
@@ -153,15 +158,22 @@ public class ModbusService {
     }
     // 将有更新的压板状态推送到前端
     try {
-      String text = webSocketService.stringifyPtPlates(ptPlateRspDTOS);
-      webSocketService.broadcast(boardId, text);
+      // 状态恢复
+      if (ptBoard.getStatus() == PtBoardStatusValue.OFFLINE) {
+        ptBoard.setStatus(PtBoardStatusValue.ONLINE);
+        ptBoardRepository.save(ptBoard);
+      }
+      PtBoardRspDTO ptBoardRspDTO = PtBoardController.ptBoardMapper(ptBoard);
+      ptBoardRspDTO.setPlates(ptPlateRspDTOS);
+      String text = webSocketService.stringifyMessage(ptBoardRspDTO);
+      webSocketService.broadcast(ptBoard.getId(), text);
     } catch (JsonProcessingException e) {
       log.error("failed to serialize broadcast message");
     }
   }
 
-  public void shortConnect(Long boardId, String ip, Integer port) {
-    try (Socket client = new Socket(ip, port)) {
+  public void shortConnect(PtBoard ptBoard) {
+    try (Socket client = new Socket(ptBoard.getIp(), ptBoard.getPort())) {
       client.setSoTimeout(3000);
       // 建立连接
       OutputStream out = client.getOutputStream();
@@ -183,15 +195,26 @@ public class ModbusService {
         log.info("receive invalid response: {}", encodeUsingHexFormat(response));
         return;
       }
-      parseMessage(boardId, response);
+      parseMessage(ptBoard, response);
     } catch (IOException e) {
       log.error(e.getMessage());
-      // 发生错误，退出
+      // 状态离线
+      try {
+        if (ptBoard.getStatus() == PtBoardStatusValue.ONLINE) {
+          ptBoard.setStatus(PtBoardStatusValue.OFFLINE);
+          ptBoardRepository.save(ptBoard);
+        }
+        PtBoardRspDTO ptBoardRspDTO = PtBoardController.ptBoardMapper(ptBoard);
+        String text = webSocketService.stringifyMessage(ptBoardRspDTO);
+        webSocketService.broadcast(ptBoard.getId(), text);
+      } catch (JsonProcessingException e1) {
+        log.error(e1.getMessage());
+      }
     }
   }
 
-  public void persistentConnect(Long boardId, String ip, Integer port) throws IOException {
-    Socket client = new Socket(ip, port);
+  public void persistentConnect(PtBoard ptBoard) throws IOException {
+    Socket client = new Socket(ptBoard.getIp(), ptBoard.getPort());
     // 建立连接
     InputStream in = client.getInputStream();
     // 接收响应
@@ -204,10 +227,10 @@ public class ModbusService {
         log.warn("receive invalid response: {}", encodeUsingHexFormat(response));
         continue;
       }
-      parseMessage(boardId, response);
+      parseMessage(ptBoard, response);
       buffer = new byte[1024]; // 清空缓冲区
     }
     client.close();
-    log.info("close client: {}:{}", ip, port);
+    log.info("close client: {}:{}", ptBoard.getIp(), ptBoard.getPort());
   }
 }

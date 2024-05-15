@@ -32,7 +32,9 @@ CREATE TABLE `pt_board` (
   `ip` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `port` int DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `status` tinyint NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `pt_board_chk_1` CHECK ((`status` between 0 and 2))
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -42,7 +44,7 @@ CREATE TABLE `pt_board` (
 
 LOCK TABLES `pt_board` WRITE;
 /*!40000 ALTER TABLE `pt_board` DISABLE KEYS */;
-INSERT INTO `pt_board` VALUES (1,'2024-04-29 07:11:02.000000',_binary '\0','2024-04-29 07:11:02.000000',0,_binary '','127.0.0.1','铁板1',502);
+INSERT INTO `pt_board` VALUES (1,'2024-04-29 07:11:02.000000',_binary '\0','2024-04-29 07:11:02.000000',0,_binary '','127.0.0.1','铁板1',502,1);
 /*!40000 ALTER TABLE `pt_board` ENABLE KEYS */;
 UNLOCK TABLES;
 

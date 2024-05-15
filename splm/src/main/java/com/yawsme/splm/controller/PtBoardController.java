@@ -55,6 +55,7 @@ public class PtBoardController {
     result.setId(ptBoard.getId());
     result.setName(ptBoard.getName());
     result.setEnabled(ptBoard.getEnabled());
+    result.setStatus(ptBoard.getStatus());
 
     return result;
   }
